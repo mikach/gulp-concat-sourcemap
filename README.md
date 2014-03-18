@@ -1,4 +1,4 @@
-gulp-concat-sourcemap
+gulp-concat-sourcemap [![Build Status](https://travis-ci.org/mikach/gulp-concat-sourcemap.png?branch=master)](https://travis-ci.org/mikach/gulp-concat-sourcemap)
 =====================
 
 Concatenate files and generate a source map file.
