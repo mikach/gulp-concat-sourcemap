@@ -4,7 +4,7 @@
   "description": "Concatenate files and generate a source map file",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --reporter spec"
   },
   "repository": {
     "type": "git",
@@ -37,5 +37,9 @@
     "shasum": "e94cb4bdfb0cf27ecce1565496248c915f96659c"
   },
   "_from": "gulp-concat-sourcemap@",
-  "_resolved": "https://registry.npmjs.org/gulp-concat-sourcemap/-/gulp-concat-sourcemap-1.0.0.tgz"
+  "_resolved": "https://registry.npmjs.org/gulp-concat-sourcemap/-/gulp-concat-sourcemap-1.0.0.tgz",
+  "devDependencies": {
+    "mocha": "^1.18.2",
+    "chai": "^1.9.0"
+  }
 }
