@@ -1,0 +1,41 @@
+{
+  "name": "gulp-concat-sourcemap",
+  "version": "1.0.0",
+  "description": "Concatenate files and generate a source map file",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mikach/gulp-concat-sourcemap.git"
+  },
+  "keywords": [
+    "gulpplugin",
+    "gulp",
+    "concat",
+    "sourcemap"
+  ],
+  "author": {
+    "name": "Michael",
+    "email": "mikach27@gmail.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mikach/gulp-concat-sourcemap/issues"
+  },
+  "homepage": "https://github.com/mikach/gulp-concat-sourcemap",
+  "dependencies": {
+    "through": "^2.3.4",
+    "gulp-util": "^2.2.14",
+    "source-map": "^0.1.33"
+  },
+  "readme": "gulp-concat-sourcemap\r\n=====================\r\n\r\nConcatenate files and generate a source map file.\r\n\r\nBased on https://github.com/wearefractal/gulp-concat\r\n\r\n### Usage\r\n\r\n```javascript\r\nvar concat = require('gulp-concat-sourcemap');\r\n\r\ngulp.task('concat', function() {\r\n    gulp.src(['file1.js', './js/*.js', 'file2.js'])\r\n        .pipe(concat('all.js', options))\r\n        .pipe(gulp.dest('./dist/'));\r\n});\r\n```\r\n\r\n### Options\r\n\r\n`options.sourcesContent`\r\nAn optional flag that tells the source map generator whether or not to include all original sources in the map.\r\n\r\n`options.sourceRoot`\r\nAn optional root for all relative URLs in the source map.",
+  "readmeFilename": "README.md",
+  "_id": "gulp-concat-sourcemap@1.0.0",
+  "dist": {
+    "shasum": "e94cb4bdfb0cf27ecce1565496248c915f96659c"
+  },
+  "_from": "gulp-concat-sourcemap@",
+  "_resolved": "https://registry.npmjs.org/gulp-concat-sourcemap/-/gulp-concat-sourcemap-1.0.0.tgz"
+}
