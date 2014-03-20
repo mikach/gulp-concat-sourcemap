@@ -24,3 +24,6 @@ An optional flag that tells the source map generator whether or not to include a
 
 `options.sourceRoot`
 An optional root for all relative URLs in the source map.
+
+`options.prefix`
+Skip prefix for original filenames that appear in source maps. For example {prefix: 3} will drop 3 directories from file names.
