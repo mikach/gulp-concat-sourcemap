@@ -30,6 +30,13 @@ module.exports = function(fileName, opts) {
 
         var rel = path.relative(file.cwd, file.path).replace('\\', '/');
 
+        if(opts.prefix) {
+            var p = opts.prefix;
+            while(p-- > 0) {
+                rel = rel.substring(rel.indexOf('/') + 1);
+            }
+        }
+
         file.contents.toString('utf8').split('\n').forEach(function(line, j){
             sourceNode.add(new SourceNode(j + 1, 0, rel, line + '\n'));
         });
