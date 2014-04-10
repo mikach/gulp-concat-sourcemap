@@ -48,7 +48,7 @@ module.exports = function(fileName, opts) {
     }
 
     function endStream(){
-        if (!firstFile) return;
+        if (!firstFile) return this.emit('end');
 
         var contentPath = path.join(firstFile.base, fileName),
             mapPath = contentPath + '.map';
