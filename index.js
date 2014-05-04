@@ -28,7 +28,7 @@ module.exports = function(fileName, opts) {
 
         if (!firstFile) firstFile = file;
 
-        var rel = path.relative(file.cwd, file.path).replace('\\', '/');
+        var rel = path.relative(file.cwd, file.path).replace(/\\/g, '/');
 
         if(opts.prefix) {
             var p = opts.prefix;
