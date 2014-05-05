@@ -37,6 +37,9 @@ module.exports = function(fileName, opts) {
             }
         }
 
+        if (file.contents[0] === 0xEF && file.contents[1] === 0xBB && file.contents[2] === 0xBF) {
+            file.contents = file.contents.slice(3);
+        }
         file.contents.toString('utf8').split('\n').forEach(function(line, j){
             sourceNode.add(new SourceNode(j + 1, 0, rel, line + '\n'));
         });
