@@ -37,9 +37,11 @@ module.exports = function(fileName, opts) {
             }
         }
 
+        // remove utf-8 byte order mark
         if (file.contents[0] === 0xEF && file.contents[1] === 0xBB && file.contents[2] === 0xBF) {
             file.contents = file.contents.slice(3);
         }
+
         file.contents.toString('utf8').split('\n').forEach(function(line, j){
             sourceNode.add(new SourceNode(j + 1, 0, rel, line + '\n'));
         });
@@ -57,9 +59,9 @@ module.exports = function(fileName, opts) {
             mapPath = contentPath + '.map';
 
         if (/\.css$/.test(fileName)) {
-            sourceNode.add('/*# sourceMappingURL=' + fileName + '.map' + ' */');
+            sourceNode.add('/*# sourceMappingURL=' + (opts.sourceMappingBaseURL || '') + fileName + '.map' + ' */');
         } else {
-            sourceNode.add('//# sourceMappingURL=' + fileName + '.map');
+            sourceNode.add('//# sourceMappingURL=' + (opts.sourceMappingBaseURL || '') + fileName + '.map');
         }
 
         var codeMap = sourceNode.toStringWithSourceMap({
