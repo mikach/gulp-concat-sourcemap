@@ -131,4 +131,53 @@ describe('gulp-concat-sourcemap', function() {
         stream.write(file2);
         stream.end();
     });
+	
+	it('should generate source content inline', function(){
+        var file1 = new File({
+            base: '/test',
+            path: 'test/path/file1.js',
+            contents: new Buffer('console.log(\'Hello\');')
+        });
+
+        var file2 = new File({
+            base: '/test',
+            path: 'test/path/file2.js',
+            contents: new Buffer('console.log(\'World\');')
+        });
+
+        var stream = concat('file.js', {prefix: 2, sourcesContent: true});
+
+        var contentFile;
+        stream.on('data', function(newFile) {
+            if (!contentFile) { // contentFile
+                contentFile = newFile;
+                console.log(String(newFile.contents));
+                expect(String(newFile.contents)).to.be.equal(
+                        'console.log(\'Hello\');' +
+                        '\n\nconsole.log(\'World\');\n\n' +
+                        '//# sourceMappingURL=file.js.map'
+                );
+            } else { // mapFile
+                expect(String(newFile.contents)).to.be.equal(
+                        "{\n  " +
+                        "\"version\": 3,\n  " +
+                        "\"file\": \"file.js\",\n  " +
+                        "\"sources\": [\n    " +
+                        "\"file1.js\",\n    " +
+                        "\"file2.js\"\n  ],\n  " +
+                        "\"names\": [],\n  " +
+                        "\"mappings\": \"AAAA;;ACAA\",\n  " +
+                        "\"sourcesContent\": [\n    " +
+                        "\"console.log('Hello');\",\n    " +
+                        "\"console.log('World');\"\n  " +
+                        "]\n" +
+                        "}");
+                done();
+            }
+        });
+
+        stream.write(file1);
+        stream.write(file2);
+        stream.end();
+    });
 });
