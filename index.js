@@ -48,7 +48,7 @@ module.exports = function(fileName, opts) {
         sourceNode.add('\n');
 
         if (opts.sourcesContent) {
-            sourceNode.setSourceContent(file.relative, file.contents.toString('utf8'));
+            sourceNode.setSourceContent(rel, file.contents.toString('utf8'));
         }
     }
 
