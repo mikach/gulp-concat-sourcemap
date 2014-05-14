@@ -132,7 +132,7 @@ describe('gulp-concat-sourcemap', function() {
         stream.end();
     });
 	
-	it('should generate source content inline', function(){
+	it('should generate source content inline', function(done){
         var file1 = new File({
             base: '/test',
             path: 'test/path/file1.js',
