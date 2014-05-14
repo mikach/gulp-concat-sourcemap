@@ -151,7 +151,6 @@ describe('gulp-concat-sourcemap', function() {
         stream.on('data', function(newFile) {
             if (!contentFile) { // contentFile
                 contentFile = newFile;
-                console.log(String(newFile.contents));
                 expect(String(newFile.contents)).to.be.equal(
                         'console.log(\'Hello\');' +
                         '\n\nconsole.log(\'World\');\n\n' +
