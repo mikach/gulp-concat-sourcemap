@@ -1,4 +1,6 @@
-var expect = require('chai').expect;
+var chai = require('chai')
+
+var expect = chai.expect;
 
 var Stream = require('stream');
 
@@ -131,8 +133,7 @@ describe('gulp-concat-sourcemap', function() {
         stream.write(file2);
         stream.end();
     });
-	
-	it('should generate source content inline', function(done){
+    it('should generate source content inline', function(done){
         var file1 = new File({
             base: '/test',
             path: 'test/path/file1.js',
@@ -173,6 +174,82 @@ describe('gulp-concat-sourcemap', function() {
                         "}");
                 done();
             }
+        });
+
+        stream.write(file1);
+        stream.write(file2);
+        stream.end();
+    });
+
+    it('should not produce a sourcemap file if sourceMap is truthy on the input file', function(done) {
+        var file1 = new File({
+            cwd: 'test',
+            base: '/test',
+            path: 'test/file1.js',
+            contents: new Buffer('console.log(\'Hello\');')
+        });
+        file1.sourceMap = {version: 3, file:'file1.js', sources: ['file1.js'], mappings:""}
+
+        var file2 = new File({
+            cwd: 'test',
+            base: '/test',
+            path: 'test/file2.js',
+            contents: new Buffer('console.log(\'World\');')
+        });
+        file2.sourceMap = {version: 3, file:'file2.js', sources: ['file2.js'], mappings:""}
+
+        var stream = concat('file.js', { sourceMappingBaseURL: 'scripts/' });
+
+        stream.on('data', function(newFile) {
+            expect(String(newFile.contents)).to.equal(
+                'console.log(\'Hello\');' +
+                '\n\nconsole.log(\'World\');\n\n'
+            );
+            expect(newFile.sourceMap).to.exist;
+            expect(JSON.stringify(newFile.sourceMap, null, '  ')).to.be.equal(
+                    '{\n  \"version\": 3,\n  \"file\": \"file.js\",' + 
+                    '\n  \"sources\": [\n    \"file1.js\",\n    \"file2.js\"\n  ]' +
+                    ',\n  \"names\": [],\n  \"mappings\": \"AAAA;;ACAA\"\n}'
+                );
+            done();
+        });
+
+        stream.write(file1);
+        stream.write(file2);
+        stream.end();
+    });
+  
+    it('should use the input sourcemap if it is available', function(done) {
+        var file1 = new File({
+            cwd: 'test',
+            base: '/test',
+            path: 'test/file1.js',
+            contents: new Buffer('console.log(\'Hello\');')
+        });
+        file1.sourceMap = {version: 3, file:'file1.js', sources: ['file1.coffee'], mappings:"AAAA,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,GAAG,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE;"}
+
+        var file2 = new File({
+            cwd: 'test',
+            base: '/test',
+            path: 'test/file2.js',
+            contents: new Buffer('console.log(\'World\');')
+        });
+        file2.sourceMap = {version: 3, file:'file2.js', sources: ['file2.coffee'], mappings:"AAAA,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,GAAG,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE;"}
+
+        var stream = concat('file.js', { sourceMappingBaseURL: 'scripts/' });
+
+        stream.on('data', function(newFile) {
+            expect(String(newFile.contents)).to.equal(
+                'console.log(\'Hello\');' +
+                '\n\nconsole.log(\'World\');\n\n'
+            );
+            expect(newFile.sourceMap).to.exist;
+            expect(JSON.stringify(newFile.sourceMap, null, '  ')).to.be.equal(
+                    '{\n  \"version\": 3,\n  \"file\": \"file.js\",' + 
+                    '\n  \"sources\": [\n    \"file1.coffee\",\n    \"file2.coffee\"\n  ]' +
+                    ',\n  \"names\": [],\n  \"mappings\": \"AAAA,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,GAAG,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE;;ACAnB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,GAAG,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE\"\n}'
+                );
+            done();
         });
 
         stream.write(file1);
