@@ -41,12 +41,17 @@ module.exports = function(fileName, opts) {
         if (file.contents[0] === 0xEF && file.contents[1] === 0xBB && file.contents[2] === 0xBF) {
             file.contents = file.contents.slice(3);
         }
-
-        file.contents.toString('utf8').split('\n').forEach(function(line, j){
-            sourceNode.add(new SourceNode(j + 1, 0, rel, line + '\n'));
-        });
-        sourceNode.add('\n');
-
+        
+        if(file.sourceMap && file.sourceMap.mappings != '') {
+          sourceNode.add(SourceNode.fromStringWithSourceMap(file.contents.toString('utf8') + '\n\n', new SourceMapConsumer(file.sourceMap)));
+        } else {
+            file.contents.toString('utf8').split('\n').forEach(function(line, j){
+                sourceNode.add(new SourceNode(j + 1, 0, rel, line + '\n'));
+            });
+            sourceNode.add('\n');
+        }
+          
+          
         if (opts.sourcesContent) {
             sourceNode.setSourceContent(rel, file.contents.toString('utf8'));
         }
@@ -57,11 +62,13 @@ module.exports = function(fileName, opts) {
 
         var contentPath = path.join(firstFile.base, fileName),
             mapPath = contentPath + '.map';
-
-        if (/\.css$/.test(fileName)) {
-            sourceNode.add('/*# sourceMappingURL=' + (opts.sourceMappingBaseURL || '') + fileName + '.map' + ' */');
-        } else {
-            sourceNode.add('//# sourceMappingURL=' + (opts.sourceMappingBaseURL || '') + fileName + '.map');
+        
+        if(!firstFile.sourceMap) {
+            if (/\.css$/.test(fileName)) {
+                sourceNode.add('/*# sourceMappingURL=' + (opts.sourceMappingBaseURL || '') + fileName + '.map' + ' */');
+            } else {
+                sourceNode.add('//# sourceMappingURL=' + (opts.sourceMappingBaseURL || '') + fileName + '.map');
+            }
         }
 
         var codeMap = sourceNode.toStringWithSourceMap({
@@ -69,9 +76,7 @@ module.exports = function(fileName, opts) {
             sourceRoot: opts.sourceRoot || ''
         });
 
-        var sourceMap = SourceMapGenerator
-                                .fromSourceMap( new SourceMapConsumer( codeMap.map.toJSON() ) )
-                                .toJSON();
+        var sourceMap = codeMap.map.toJSON();
                                 
         sourceMap.file = path.basename(sourceMap.file);
 
@@ -81,16 +86,20 @@ module.exports = function(fileName, opts) {
             path: contentPath,
             contents: new Buffer(codeMap.code)
         });
-
-        var mapFile = new File({
-            cwd: firstFile.cwd,
-            base: firstFile.base,
-            path: mapPath,
-            contents: new Buffer(JSON.stringify(sourceMap, null, '  '))
-        });
+      
+        if(firstFile.sourceMap){
+            contentFile.sourceMap = sourceMap;
+        } else {
+            var mapFile = new File({
+                cwd: firstFile.cwd,
+                base: firstFile.base,
+                path: mapPath,
+                contents: new Buffer(JSON.stringify(sourceMap, null, '  '))
+            });
+        }
 
         this.emit('data', contentFile);
-        this.emit('data', mapFile);
+        if(!firstFile.sourceMap) this.emit('data', mapFile);
         this.emit('end');
     }
 
