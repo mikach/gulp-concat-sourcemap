@@ -28,7 +28,7 @@
   "dependencies": {
     "through": "^2.3.4",
     "gulp-util": "^2.2.14",
-    "source-map": "^0.1.33"
+    "source-map": "0.1.33"
   },
   "devDependencies": {
     "mocha": "^1.18.2",
